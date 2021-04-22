@@ -34,7 +34,7 @@ find_CS = 'select schema_name from information_schema.schemata where schema_name
 drop = 'drop database '
 use = 'use '
 create = 'create database '
-path_root = 'mysql -u root -ptthw123 '
+path_root = 'mysql -u root -p****** '
 link_sympol = ' < '
 
 def changeRole(Role):
@@ -64,7 +64,7 @@ class database_operate:
 
     def deleteCS(self):
 
-        db = MySQLdb.connect("localhost", "root", "tthw123", "%s" % self.C2D_database, charset="utf8")
+        db = MySQLdb.connect("localhost", "root", "******", "%s" % self.C2D_database, charset="utf8")
         cursor = db.cursor()
 
         if self.C2D_database:
@@ -80,7 +80,7 @@ class database_operate:
 
     def import_database(self):
 
-        db = MySQLdb.connect("localhost", "root", "tthw123", "%s" % self.C2D_database, charset="utf8")
+        db = MySQLdb.connect("localhost", "root", "******", "%s" % self.C2D_database, charset="utf8")
         cursor = db.cursor()
 
         for i in self.key:
