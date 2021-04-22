@@ -1,30 +1,42 @@
 # -*- coding: utf-8 -*-
 import os
-import re
-# import MySQLdb
 
-#配置项如下
-path_agame = [
-    r'G:\Test_Environment\Agame',
-    r'G:\Test_Environment\Agame2',
-    r'G:\Test_Environment\Agame_BT',
-    'F:\\Package_tool\\Agame_package\\versions\\',
-]
+program = {
+    'Agame':[' LoginServer.exe', ' GameServer.exe', ' agame.exe'],
+    'Xgame':[' LoginServer.exe', ' GameServer.exe', ' xgame.exe'],
+    'Vgame':[' LoginServer.exe', ' GameServer.exe', ' vgame.exe'],
+}
 
-path_xgame = [
-    r'G:\Test_Environment\Xgame1',
-    r'G:\Test_Environment\Xgame2',
-    r'G:\Test_Environment\Xgame_BT3',
-    'F:\\Package_tool\\Xgame_package\\versions\\',
-]
+path_root = {
 
-path_vgame = [
-    r'G:\Test_Environment\Vgame',
-    r'G:\Test_Environment\Vgame2',
-]
+    'Agame':[
+        r'G:\Test_Environment\Agame',
+        r'G:\Test_Environment\Agame2',
+        r'G:\Test_Environment\Agame_BT',
+        'F:\\Package_tool\\Agame_package\\versions\\',],
+
+    'Xgame':[
+        r'G:\Test_Environment\Xgame1',
+        r'G:\Test_Environment\Xgame2',
+        r'G:\Test_Environment\Xgame_BT3',
+        'F:\\Package_tool\\Xgame_package\\versions\\',],
+
+    'Vgame':[
+        r'G:\Test_Environment\Vgame',
+        r'G:\Test_Environment\Vgame2',],
+}
+
+folder = {
+    'Agame':['\LoginServer','\GameServer','\Client'],
+    'Xgame':['\XLoginServer','\XGameServer','\XGameClient'],
+    'Vgame':['\LoginServer','\GameServer','\Client'],
+}
 
 
-#下面的不用改
+task_start = 'start /d '
+
+path_symbol = '"'
+
 def killTask():
 
     task_List = ['LoginServer.exe','GameServer.exe','agame.exe','vgame.exe','sgame.exe','xgame.exe']
@@ -38,66 +50,47 @@ def killTask():
             os.system('%s' % task_Kill)
     return
 
-task_start = 'start /d '
-folder_agame_vgame_sgame = ['\LoginServer','\GameServer','\Client']
-folder_xgame = ['\XLoginServer','\XGameServer','\XGameClient']
-path_symbol = '"'
+class quick_start:
+    
+    def __init__(self,program,path_root,folder):
 
-program_agame = [' LoginServer.exe', ' GameServer.exe', ' agame.exe']
-program_vgame = [' LoginServer.exe', ' GameServer.exe', ' vgame.exe']
-program_xgame = [' LoginServer.exe', ' GameServer.exe', ' xgame.exe']
-program_sgame = [' LoginServer.exe', ' GameServer.exe', ' sgame.exe']
+        self.program = program
+        self.path_root = path_root
+        self.folder = folder
 
-def Agame_Xgame_Start(gameNumber,program,path_root,folder):
+    def game_start_normal(self):
 
-    gameNumber = int(gameNumber)
-    if gameNumber == 1 or gameNumber == 2 or gameNumber == 3:
-        for k in range(len(program)):
-            path = task_start + path_symbol + path_root[gameNumber-1] + folder[k] + path_symbol + program[k]
+        for k in range(len(self.program)):
+            path = task_start + path_symbol + self.path_root + self.folder[k] + path_symbol + self.program[k]
             os.system('%s' % path)
-    elif gameNumber == 4:
-        version_list = os.listdir(path_root[gameNumber-1])
+
+    def game_start_version(self):
+
+        version_list = os.listdir(self.path_root)
         num = []
         remove = []
-        #剔除长度不符的元素
+        # 剔除长度不符的元素
         for _ in range(len(version_list)):
             if len(version_list[_]) != 8 and len(version_list[_]) != 7:
                 remove.append(version_list[_])
         for _ in remove:
             version_list.remove(_)
-        #获得数字列表
+        # 获得数字列表
         for version_id in range(len(version_list)):
             num.append(int(version_list[version_id][5:]))
-        #获得元素序列，拿到指定元素
+        # 获得元素序列，拿到指定元素
         for version_index in range(len(num)):
             if num[version_index] == max(num):
                 version_last = version_list[version_index]
                 break
-        #拼接后启动程序
+        # 拼接后启动程序
         if version_last:
-            for k in range(len(program)):
-                version_path = task_start + path_symbol + path_root[gameNumber - 1] + version_last + folder[k] + path_symbol + program[k]
+            for k in range(len(self.program)):
+                version_path = task_start + path_symbol + self.path_root + version_last + self.folder[k] + path_symbol + self.program[k]
                 os.system('%s' % version_path)
-    else:
-        print('you made a wrong choice')
-
-    return
-
-def Vgame_Start(gameNumber):
-
-    gameNumber = int(gameNumber)
-    if gameNumber == 1 or gameNumber == 2:
-        for k in range(len(program_xgame)):
-            path = task_start + path_symbol + path_vgame[gameNumber-1] + folder_agame_vgame_sgame[k] + path_symbol + program_vgame[k]
-            os.system('%s' % path)
-    else:
-        print('you made a wrong choice')
-
-    return
-
-
 
 while True:
+
     killTask()  # 启动新环境之前杀掉旧的进程
     game = raw_input(
         'please choose your game:\n''\n' 
@@ -107,7 +100,9 @@ while True:
         '====================\n')
 
     if game == '1':
+
         while True:
+
             game_environment = raw_input(
                 'please choose your game environment:\n''\n'
                 '1.No.1\n''\n'
@@ -117,16 +112,30 @@ while True:
                 '5.back\n''\n'
                 '====================\n'
             )
+
             killTask()  # 启动新环境之前杀掉旧的进程
-            if game_environment == '1' or game_environment == '2' or game_environment == '3' or game_environment == '4':
-                Agame_Xgame_Start(game_environment,program_agame,path_agame,folder_agame_vgame_sgame)
+
+            if game_environment == '1':
+                start = quick_start(program['Agame'], path_root['Agame'][0],folder['Agame'])
+                start.game_start_normal()
+            elif game_environment == '2':
+                start = quick_start(program['Agame'], path_root['Agame'][1],folder['Agame'])
+                start.game_start_normal()
+            elif game_environment == '3':
+                start = quick_start(program['Agame'], path_root['Agame'][2],folder['Agame'])
+                start.game_start_normal()
+            elif game_environment == '4':
+                start = quick_start(program['Agame'], path_root['Agame'][3],folder['Agame'])
+                start.game_start_version()
             elif game_environment == '5':
                 break
             else:
                 print('==============================================''\n''the process has been killed')
 
     elif game == '2':
+
         while True:
+
             game_environment = raw_input(
                 'please choose your game environment:\n''\n'
                 '1.No.1\n''\n'
@@ -136,16 +145,30 @@ while True:
                 '5.back\n''\n'
                 '====================\n'
             )
+
             killTask()  # 启动新环境之前杀掉旧的进程
-            if game_environment == '1' or game_environment == '2' or game_environment == '3' or game_environment == '4':
-                Agame_Xgame_Start(game_environment,program_xgame,path_xgame,folder_xgame)
+
+            if game_environment == '1':
+                start = quick_start(program['Xgame'], path_root['Xgame'][0],folder['Xgame'])
+                start.game_start_normal()
+            elif game_environment == '2':
+                start = quick_start(program['Xgame'], path_root['Xgame'][1],folder['Xgame'])
+                start.game_start_normal()
+            elif game_environment == '3':
+                start = quick_start(program['Xgame'], path_root['Xgame'][2],folder['Xgame'])
+                start.game_start_normal()
+            elif game_environment == '4':
+                start = quick_start(program['Xgame'], path_root['Xgame'][3],folder['Xgame'])
+                start.game_start_version()
             elif game_environment == '5':
                 break
             else:
                 print('==============================================''\n''the process has been killed')
 
     elif game == '3':
+
         while True:
+            
             game_environment = raw_input(
                 'please choose your game environment:\n''\n'
                 '1.No.1\n''\n'
@@ -153,9 +176,15 @@ while True:
                 '3.back\n''\n'
                 '====================\n'
             )
+
             killTask()  # 启动新环境之前杀掉旧的进程
-            if game_environment == '1' or game_environment == '2':
-                Vgame_Start(game_environment)
+
+            if game_environment == '1':
+                start = quick_start(program['Vgame'], path_root['Vgame'][0],folder['Vgame'])
+                start.game_start_normal()
+            elif game_environment == '2':
+                start = quick_start(program['Vgame'], path_root['Vgame'][1],folder['Vgame'])
+                start.game_start_normal()
             elif game_environment == '3':
                 break
             else:

@@ -3,62 +3,110 @@
 import os
 import re
 
-path_agame = [
-    r'G:\Test_Environment\Agame',
-    r'G:\Test_Environment\Agame2',
-    r'G:\Test_Environment\Agame_BT',
-    r'F:\Package_tool\Agame_package\versions\1.01.049'
-]
+path = {
 
-folder = ['\GameServer','\Client']
+    'Agame':[
+        r'G:\Test_Environment\Agame',
+        r'G:\Test_Environment\Agame2',
+        r'G:\Test_Environment\Agame_BT',
+        r'F:\Package_tool\Agame_package\versions\1.01.049',],
 
-CL = r'\agame.exe'
-GS = r'\GameServer.exe'
+    'Vgame':[
+        r'G:\Test_Environment\Vgame',
+        r'G:\Test_Environment\Vgame2'],
+}
 
-def Strat_Game(op):
-    if op == '1' or op == '2' or op == '3' or op == '4':
-        op = int(op) - 1
-        path_CL_root = path_agame[op] + folder[1]
-        path_CL = path_CL_root + CL
-        path_GS_root = path_agame[op] + folder[0]
-        path_GS = path_GS_root + GS
+folder = ['\Client','\GameServer']
+
+cl = {
+    'Agame':r'\agame.exe',
+    'Vgame':r'\vgame.exe',
+}
+
+gs = r'\GameServer.exe'
+
+id = {
+    'Agame':'serverID = ',
+    'Vgame':['serverID = ','dummySvrID = '],
+}
+
+class multi_start:
+
+    def __init__(self,path,cl,id):
+
+        self.path = path
+        self.cl = cl
+        self.id = id
+
+    def game_start(self):
+        
+        path_cl_root = self.path + folder[0]
+        path_cl = path_cl_root + self.cl
+        path_gs_root = self.path + folder[1]
+        path_gs = path_gs_root + gs
+
         while True:
+
             envir = raw_input(
                 'please choose your object''\n'
                 '1.CL''\n'
                 '2.GS''\n'
-                '3.back''\n'
+                '3.press any key to back''\n'
             )
+
             if envir == '1':
-                os.chdir(path_CL_root)
-                os.startfile(path_CL)
+                os.chdir(path_cl_root)
+                os.startfile(path_cl)
             elif envir == '2':
+
                 while True:
+
                      num = raw_input(
                          'please input your serverID''\n'
-                         'or input 5 for back''\n'
+                         'or input 5 to back''\n'
                      )
+
                      if num == '5':
                          break
                      elif re.search('[^0-9]',num) != None or num == '':
                          print('not a correct serverID ! ! !')
                          continue
                      else:
-                         os.chdir(path_GS_root)
-                         file = open('gsConfig.lua', 'r')
-                         content = file.readlines()
-                         file = open('gsConfig.lua', 'w')
-                         for line in content:
-                             new_line = re.sub(r'(serverID = ).*\d', 'serverID = %s' % num, line)
-                             file.write(new_line)
-                         file.close()
-                         os.startfile(path_GS)
-            elif envir == '3':
-                break
+                         os.chdir(path_gs_root)
+                         
+                         try:
+
+                            file = open('gsConfig.lua', 'r')
+                            content = file.readlines()
+                            file = open('gsConfig.lua', 'w')
+
+                            if len(id) == 1:
+                                for line in content:
+                                    line = re.sub(r'(serverID = ).*\d','serverID = %s' % num,line)
+                                    file.write(line)
+
+                                file.close()
+                                os.startfile(path_gs)
+
+                            elif len(id) == 2:
+                                for line in content:
+                                    line = re.sub(r'(serverID = ).*\d', 'serverID = %s' % num,line)
+                                    line = re.sub(r'(dummySvrID = ).*\d', 'dummySvrID = %s' % num,line)
+                                    file.write(line)
+
+                                file.close()
+                                os.startfile(path_gs)
+
+                         except IOError:
+
+                            print('==========================''\n''there is no such file ! ! !''\n''==========================')
+                            break
+
+                         else:
+                            print('==========================''\n''write success ~ ~ ~''\n''==========================')
+
             else:
-                print('you made a wrong choice')
-    else:
-        print('not a correct game')
+                break
 
 while True:
     op = raw_input(
@@ -68,5 +116,28 @@ while True:
         '3.AgameBT''\n'
         '4.AgameVersion''\n'
         '===============''\n'
+        '5.VgameNo.1''\n'
+        '6.VgameNo.2''\n'
+        '===============''\n'
     )
-    Strat_Game(op)
+
+    if op == '1':
+        start = multi_start(path['Agame'][0],cl['Agame'],id['Agame'])
+        start.game_start()
+    elif op == '2':
+        start = multi_start(path['Agame'][1],cl['Agame'],id['Agame'])
+        start.game_start()
+    elif op == '3':
+        start = multi_start(path['Agame'][2],cl['Agame'],id['Agame'])
+        start.game_start()
+    elif op == '4':
+        start = multi_start(path['Agame'][3],cl['Agame'],id['Agame'])
+        start.game_start()
+    elif op == '5':
+        start = multi_start(path['Vgame'][0],cl['Vgame'],id['Vgame'])
+        start.game_start()
+    elif op == '6':
+        start = multi_start(path['Vgame'][1],cl['Vgame'],id['Vgame'])
+        start.game_start()
+    else:
+        print('not a correct game')
