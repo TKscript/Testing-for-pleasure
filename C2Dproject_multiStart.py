@@ -9,7 +9,7 @@ path = {
         r'G:\Test_Environment\Agame',
         r'G:\Test_Environment\Agame2',
         r'G:\Test_Environment\Agame_BT',
-        r'F:\Package_tool\Agame_package\versions\1.01.049',],
+        r'F:\Package_tool\Agame_package\versions\1.01.050',],
 
     'Vgame':[
         r'G:\Test_Environment\Vgame',
@@ -107,6 +107,7 @@ class multi_start:
 
             else:
                 break
+        return
 
 while True:
     op = raw_input(

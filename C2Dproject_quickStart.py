@@ -63,6 +63,7 @@ class quick_start:
         for k in range(len(self.program)):
             path = task_start + path_symbol + self.path_root + self.folder[k] + path_symbol + self.program[k]
             os.system('%s' % path)
+        return
 
     def game_start_version(self):
 
@@ -88,6 +89,7 @@ class quick_start:
             for k in range(len(self.program)):
                 version_path = task_start + path_symbol + self.path_root + version_last + self.folder[k] + path_symbol + self.program[k]
                 os.system('%s' % version_path)
+        return
 
 while True:
 
